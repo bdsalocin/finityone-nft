@@ -1,0 +1,132 @@
+@import "../variables";
+
+.create-collection {
+  padding: $spacing-xl 0;
+  color: $text-light;
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: $spacing-lg;
+    color: $color-primary;
+    text-align: center;
+  }
+
+  &__form {
+    background-color: rgba($background-light, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba($color-primary, 0.2);
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-xl;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: $spacing-md;
+      color: $color-secondary;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: $spacing-sm;
+      margin-bottom: $spacing-md;
+      background-color: rgba($background-dark, 0.3);
+      border: 1px solid rgba($color-primary, 0.3);
+      border-radius: $border-radius-sm;
+      color: $text-light;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+      &:focus {
+        border-color: $color-primary;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba($color-primary, 0.2);
+      }
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      padding: $spacing-sm $spacing-md;
+      background: linear-gradient(45deg, $color-primary, $color-secondary);
+      color: $text-light;
+      border: none;
+      border-radius: $border-radius-sm;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba($color-primary, 0.4);
+      }
+
+      &:active {
+        transform: translateY(1px);
+      }
+    }
+  }
+
+  &__error,
+  &__success {
+    padding: $spacing-md;
+    margin-top: $spacing-md;
+    border-radius: $border-radius-sm;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  &__error {
+    background-color: rgba($color-error, 0.1);
+    color: $color-error;
+    border: 1px solid $color-error;
+  }
+
+  &__success {
+    background-color: rgba($color-success, 0.1);
+    color: $color-success;
+    border: 1px solid $color-success;
+  }
+}
+
+// Media queries for responsiveness
+@media (max-width: $breakpoint-md) {
+  .create-collection {
+    h1 {
+      font-size: 2rem;
+    }
+
+    &__form {
+      padding: $spacing-md;
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      button {
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .create-collection {
+    h1 {
+      font-size: 1.8rem;
+    }
+
+    &__form {
+      padding: $spacing-sm;
+
+      h2 {
+        font-size: 1.3rem;
+      }
+    }
+  }
+}

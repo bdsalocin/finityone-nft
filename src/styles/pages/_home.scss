@@ -1,0 +1,206 @@
+@import "../variables";
+
+.home {
+  &__section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: $spacing-md;
+    color: $text-light;
+  }
+
+  &__nft-marketplace {
+    margin-top: $spacing-xl;
+    padding: $spacing-lg;
+    background-color: $background-medium;
+    border-radius: $border-radius-lg;
+    box-shadow: $box-shadow;
+  }
+
+  &__collections {
+    margin-bottom: $spacing-lg;
+
+    h3 {
+      margin-bottom: $spacing-md;
+    }
+  }
+
+  &__collections-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    list-style-type: none;
+    padding: 0;
+
+    li {
+      padding: $spacing-xs $spacing-sm;
+      background-color: $background-light;
+      border-radius: $border-radius-sm;
+      cursor: pointer;
+      transition: $transition-default;
+
+      &:hover {
+        background-color: $color-primary;
+        color: $text-light;
+      }
+    }
+  }
+
+  &__nfts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: $spacing-md;
+    margin-top: $spacing-lg;
+  }
+
+  &__create-cta,
+  &__join-cta {
+    text-align: center;
+    padding: $spacing-xl 0;
+    background-color: $background-medium;
+    margin-top: $spacing-xl;
+  }
+
+  &__create-title,
+  &__join-title {
+    font-size: 2rem;
+    margin-bottom: $spacing-md;
+    color: $text-light;
+  }
+
+  &__create-subtitle,
+  &__join-subtitle {
+    font-size: 1.1rem;
+    margin-bottom: $spacing-lg;
+    color: $text-muted;
+  }
+
+  &__create-button,
+  &__join-button {
+    display: inline-block;
+    padding: $spacing-sm $spacing-lg;
+    background-color: $color-primary;
+    color: $text-light;
+    text-decoration: none;
+    border-radius: $border-radius-sm;
+    transition: $transition-default;
+
+    &:hover {
+      background-color: darken($color-primary, 10%);
+    }
+  }
+
+  &__user-nfts {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: $background-medium;
+    border-radius: $border-radius-lg;
+  }
+
+  &__user-nfts-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    list-style-type: none;
+    padding: 0;
+  }
+
+  &__nft-item {
+    background-color: lighten($background-medium, 5%);
+    border-radius: $border-radius-md;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      margin-top: 1rem;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .home {
+    &__create-title,
+    &__join-title {
+      font-size: 1.5rem;
+    }
+
+    &__create-subtitle,
+    &__join-subtitle {
+      font-size: 1rem;
+    }
+
+    &__nft-marketplace {
+      padding: $spacing-md;
+    }
+
+    &__collections-list {
+      gap: $spacing-xs;
+    }
+
+    &__nft-item {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .btn {
+        margin-left: 0;
+        margin-top: $spacing-xs;
+      }
+    }
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .home {
+    &__create-cta,
+    &__join-cta {
+      padding: $spacing-lg 0;
+    }
+
+    &__create-title,
+    &__join-title {
+      font-size: 1.3rem;
+    }
+
+    &__create-subtitle,
+    &__join-subtitle {
+      font-size: 0.9rem;
+    }
+
+    &__create-button,
+    &__join-button {
+      padding: $spacing-sm $spacing-md;
+      font-size: 0.9rem;
+    }
+
+    &__nft-marketplace {
+      padding: $spacing-sm;
+    }
+
+    &__collections-list {
+      flex-direction: column;
+
+      li {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    &__nft-item {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .btn {
+        width: 100%;
+        margin-top: $spacing-xs;
+        text-align: center;
+      }
+    }
+  }
+}

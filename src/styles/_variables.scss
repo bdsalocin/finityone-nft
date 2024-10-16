@@ -1,0 +1,92 @@
+$color-primary: #00c0ff;
+$color-secondary: #ff00a8;
+$color-tertiary: #7000ff;
+$background-dark: #0a0b0d;
+$background-medium: #1c1e22;
+$background-light: #2c2f36;
+$background-paper: #ffffff;
+
+$text-light: #ffffff;
+$text-muted: #a0a0a0;
+$text-accent: #00c0ff;
+
+$gradient-primary: linear-gradient(45deg, $color-primary, $color-secondary);
+$gradient-secondary: linear-gradient(45deg, $color-secondary, $color-tertiary);
+
+$font-primary: "Rajdhani", sans-serif;
+$font-secondary: "Orbitron", sans-serif;
+
+$spacing-xs: 0.5rem;
+$spacing-sm: 1rem;
+$spacing-md: 1.5rem;
+$spacing-lg: 2rem;
+$spacing-xl: 3rem;
+
+$border-radius-sm: 8px;
+$border-radius-md: 12px;
+$border-radius-lg: 20px;
+
+$box-shadow: 0 4px 20px rgba(0, 192, 255, 0.15);
+$box-shadow-hover: 0 8px 30px rgba(0, 192, 255, 0.25);
+
+$transition-default: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+// Ajout des variables manquantes
+$color-success: #4caf50;
+$color-error: #f44336;
+$border-color: #2c2f36;
+
+@mixin neon-glow($color) {
+  box-shadow: 0 0 5px rgba($color, 0.5), 0 0 10px rgba($color, 0.5),
+    0 0 15px rgba($color, 0.5), 0 0 20px rgba($color, 0.5);
+}
+
+@mixin glass-morphism {
+  background: rgba($background-light, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba($text-light, 0.1);
+  border-radius: $border-radius-md;
+}
+
+@mixin rainbow-bg {
+  background: $gradient-primary;
+}
+
+@mixin bubble-effect {
+  @include glass-morphism;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-sm;
+}
+
+@mixin hover-effect {
+  transition: $transition-default;
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: $box-shadow-hover;
+  }
+}
+
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+@mixin responsive($breakpoint) {
+  @if $breakpoint == sm {
+    @media (min-width: $breakpoint-sm) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @media (min-width: $breakpoint-md) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @media (min-width: $breakpoint-lg) {
+      @content;
+    }
+  } @else if $breakpoint == xl {
+    @media (min-width: $breakpoint-xl) {
+      @content;
+    }
+  }
+}

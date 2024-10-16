@@ -1,15 +1,19 @@
-@import "./styles/global";
+@import "./styles/variables";
+@import "./global";
+@import "./styles/pages/home";
+@import "./styles/pages/explore";
+@import "./styles/pages/create";
+@import "./styles/pages/profile";
+@import "./styles/components/nftcard";
+@import "./styles/components/header";
+@import "./styles/components/wallet-button";
+@import "./styles/components/footer";
+@import "./styles/components/buttons";
+@import "./styles/components/typography";
+@import "./styles/components/nftcard";
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: $font-primary;
+  background-color: $background-dark;
+  color: $text-light;
 }

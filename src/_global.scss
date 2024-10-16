@@ -1,0 +1,134 @@
+// _variables.scss
+$color-primary: #00c0ff;
+$color-secondary: #ff00a8;
+$color-tertiary: #7000ff;
+$background-dark: #0a0b0d;
+$background-medium: #1c1e22;
+$background-light: #2c2f36;
+$background-paper: #ffffff;
+
+$text-light: #ffffff;
+$text-muted: #a0a0a0;
+$text-accent: #00c0ff;
+
+$gradient-primary: linear-gradient(45deg, $color-primary, $color-secondary);
+$gradient-secondary: linear-gradient(45deg, $color-secondary, $color-tertiary);
+
+$font-primary: "Rajdhani", sans-serif;
+$font-secondary: "Orbitron", sans-serif;
+
+$spacing-xs: 0.5rem;
+$spacing-sm: 1rem;
+$spacing-md: 1.5rem;
+$spacing-lg: 2rem;
+$spacing-xl: 3rem;
+
+$border-radius-sm: 8px;
+$border-radius-md: 12px;
+$border-radius-lg: 20px;
+
+$box-shadow: 0 4px 20px rgba(0, 192, 255, 0.15);
+$box-shadow-hover: 0 8px 30px rgba(0, 192, 255, 0.25);
+
+$transition-default: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+@mixin neon-glow($color) {
+  box-shadow: 0 0 5px rgba($color, 0.5), 0 0 10px rgba($color, 0.5),
+    0 0 15px rgba($color, 0.5), 0 0 20px rgba($color, 0.5);
+}
+
+@mixin glass-morphism {
+  background: rgba($background-light, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba($text-light, 0.1);
+  border-radius: $border-radius-md;
+}
+
+@mixin rainbow-bg {
+  background: $gradient-primary;
+}
+
+@mixin bubble-effect {
+  @include glass-morphism;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-sm;
+}
+
+// _global.scss
+body {
+  font-family: $font-primary;
+  background-color: $background-dark;
+  color: $text-light;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-secondary;
+  font-weight: 700;
+  margin-bottom: $spacing-md;
+  background: $gradient-primary;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+a {
+  color: $color-primary;
+  text-decoration: none;
+  transition: $transition-default;
+
+  &:hover {
+    color: $color-secondary;
+    @include neon-glow($color-primary);
+  }
+}
+
+.btn {
+  font-family: $font-secondary;
+  font-weight: 600;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-md;
+  border: none;
+  cursor: pointer;
+  transition: $transition-default;
+
+  &-primary {
+    background: $gradient-primary;
+    color: $text-light;
+
+    &:hover {
+      @include neon-glow($color-primary);
+    }
+  }
+
+  &-secondary {
+    background: $gradient-secondary;
+    color: $text-light;
+
+    &:hover {
+      @include neon-glow($color-secondary);
+    }
+  }
+}
+
+.card {
+  @include glass-morphism;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+
+  &:hover {
+    @include neon-glow($color-primary);
+  }
+}
+
+.text-accent {
+  color: $text-accent;
+}
+
+.bg-medium {
+  background-color: $background-medium;
+}

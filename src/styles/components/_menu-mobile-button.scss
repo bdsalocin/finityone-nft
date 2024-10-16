@@ -1,0 +1,90 @@
+@import "../variables";
+
+.header {
+  &__mobile-menu-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: $spacing-sm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $color-primary;
+    transition: all 0.3s ease;
+    border-radius: $border-radius-sm;
+    outline: none;
+
+    // Effet de bordure néon
+    box-shadow: 0 0 5px rgba($color-primary, 0.5),
+      0 0 10px rgba($color-primary, 0.5);
+
+    &:hover,
+    &:focus {
+      color: $color-secondary;
+      box-shadow: 0 0 10px rgba($color-secondary, 0.7),
+        0 0 20px rgba($color-secondary, 0.5);
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover svg {
+      transform: scale(1.1);
+    }
+
+    // Animation pour l'ouverture/fermeture
+    &.active {
+      svg {
+        transform: rotate(90deg);
+      }
+    }
+  }
+}
+
+.header__mobile-nav {
+  background-color: rgba($background-dark, 0.95);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  padding: $spacing-md;
+  border-top: 1px solid rgba($color-primary, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+
+  .header__nav-item {
+    margin-bottom: $spacing-sm;
+  }
+
+  .header__nav-link {
+    display: block;
+    padding: $spacing-sm;
+    color: $text-light;
+    text-decoration: none;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: rgba($color-primary, 0.1);
+      color: $color-secondary;
+    }
+  }
+
+  .header__dropdown {
+    background-color: rgba($background-medium, 0.8);
+    margin-top: $spacing-xs;
+    border-radius: $border-radius-sm;
+  }
+
+  .header__dropdown-item {
+    padding: $spacing-sm;
+    color: $text-light;
+    text-decoration: none;
+    display: block;
+
+    &:hover {
+      background-color: rgba($color-secondary, 0.1);
+    }
+  }
+}

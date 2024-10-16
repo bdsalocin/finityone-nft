@@ -1,0 +1,109 @@
+@import "../variables";
+
+.btn {
+  display: inline-block;
+  padding: $spacing-sm $spacing-md;
+  font-family: $font-secondary;
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition: $transition-default;
+  background: $gradient-primary;
+  color: $text-light;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $gradient-secondary;
+    opacity: 0;
+    transition: $transition-default;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba($color-primary, 0.4);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  // Variantes
+  &--primary {
+    background: $gradient-primary;
+  }
+
+  &--secondary {
+    background: $gradient-secondary;
+  }
+
+  &--outline {
+    background: transparent;
+    border: 2px solid $color-primary;
+    color: $color-primary;
+
+    &:hover {
+      background: rgba($color-primary, 0.1);
+      color: $text-light;
+    }
+  }
+
+  &--large {
+    padding: $spacing-md $spacing-lg;
+    font-size: 1.1rem;
+  }
+
+  &--small {
+    padding: $spacing-xs $spacing-sm;
+    font-size: 0.9rem;
+  }
+
+  &--full-width {
+    width: 100%;
+  }
+
+  // Style spécifique pour le bouton de portefeuille
+  &.wallet-button__toggle {
+    @extend .btn--primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-sm;
+
+    &::before {
+      content: "\1F4B0"; // Emoji de portefeuille
+      font-size: 1.2em;
+    }
+  }
+}
+
+// Animation de lueur
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba($color-primary, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba($color-primary, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba($color-primary, 0.5);
+  }
+}
+
+.btn--glow {
+  animation: glow 2s infinite;
+}

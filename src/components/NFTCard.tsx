@@ -1,39 +1,53 @@
-import React from "react";
-import {
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  Button,
-} from "@mui/material";
+import React, { useState } from "react";
 import { NFT } from "../types";
 
 interface NFTCardProps {
   nft: NFT;
+  onBuy: () => void;
+  onList: (price: string) => void;
+  isOwner: boolean;
 }
 
-const NFTCard: React.FC<NFTCardProps> = ({ nft }) => {
+const NFTCard: React.FC<NFTCardProps> = ({ nft, onBuy, onList, isOwner }) => {
+  const [listPrice, setListPrice] = useState("");
+
   return (
-    <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <CardMedia
-        component="img"
-        height="200"
-        image={nft.image}
-        alt={nft.name}
-      />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography gutterBottom variant="h5" component="h2">
-          {nft.name}
-        </Typography>
-        <Typography>{nft.description}</Typography>
-        <Typography variant="h6" sx={{ mt: 2 }}>
-          Price: {nft.price} ONE
-        </Typography>
-      </CardContent>
-      <Button size="small" color="primary" sx={{ m: 2 }}>
-        View Details
-      </Button>
-    </Card>
+    <div className="nft-card">
+      <img src={nft.image} alt={nft.name} className="nft-card__image" />
+      <div className="nft-card__content">
+        <h3 className="nft-card__title">{nft.name}</h3>
+        <p className="nft-card__description">{nft.description}</p>
+        <p className="nft-card__owner">Owner: {nft.owner}</p>
+        {nft.price !== "0" ? (
+          <>
+            <p className="nft-card__price">Price: {nft.price} ONE</p>
+            {!isOwner && (
+              <button onClick={onBuy} className="nft-card__buy-button">
+                Buy
+              </button>
+            )}
+          </>
+        ) : (
+          isOwner && (
+            <div className="nft-card__list">
+              <input
+                type="text"
+                value={listPrice}
+                onChange={(e) => setListPrice(e.target.value)}
+                placeholder="Price in ONE"
+                className="nft-card__list-input"
+              />
+              <button
+                onClick={() => onList(listPrice)}
+                className="nft-card__list-button"
+              >
+                List for Sale
+              </button>
+            </div>
+          )
+        )}
+      </div>
+    </div>
   );
 };
 

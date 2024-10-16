@@ -1,0 +1,50 @@
+@import "../variables";
+
+.nft-card {
+  background-color: $background-medium;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+  transition: $transition-default;
+
+  @include hover-effect;
+
+  &__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+
+  &__content {
+    padding: $spacing-md;
+  }
+
+  &__title {
+    font-family: $font-secondary;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: $spacing-sm;
+    color: $text-light;
+
+    @include responsive(md) {
+      font-size: 1.2rem;
+    }
+  }
+
+  &__description {
+    font-family: $font-primary;
+    font-size: 0.9rem;
+    color: $text-muted;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__price {
+    font-family: $font-secondary;
+    font-size: 1rem;
+    color: $color-primary;
+    font-weight: 600;
+
+    @include responsive(md) {
+      font-size: 1.1rem;
+    }
+  }
+}
