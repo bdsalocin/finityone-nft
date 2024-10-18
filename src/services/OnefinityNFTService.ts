@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { NFT } from "../types";
+import { networkConfig, contractAddresses } from "../config";
 
 const ONEFINITY_RPC = "https://testnet-rpc.onefinity.network";
 const CHAIN_ID = 999987;
@@ -12,86 +13,86 @@ const MINIMAL_ERC721_ABI = [
   "function balanceOf(address owner) view returns (uint256)",
   "function tokenOfOwnerByIndex(address owner, uint256 index) view returns (uint256)",
   "function tokenURI(uint256 tokenId) view returns (string)",
-  "function name() view returns (string)",
-  "function symbol() view returns (string)",
   "function ownerOf(uint256 tokenId) view returns (address)",
-  "function getApproved(uint256 tokenId) view returns (address)",
-  "function isApprovedForAll(address owner, address operator) view returns (bool)",
-  "function transferFrom(address from, address to, uint256 tokenId)",
-  "function safeTransferFrom(address from, address to, uint256 tokenId)",
-  "function setApprovalForAll(address operator, bool _approved)",
+  "function mint(address to, string memory tokenURI) public returns (uint256)",
+  "function setApprovalForAll(address operator, bool approved) public",
+  "function isApprovedForAll(address owner, address operator) public view returns (bool)",
+  "function safeTransferFrom(address from, address to, uint256 tokenId) public",
 ];
 
-class OnefinityNFTService {
-  private provider: ethers.providers.Web3Provider | null = null;
+const MARKETPLACE_ABI = [
+  "function listItem(address nftAddress, uint256 tokenId, uint256 price) external",
+  "function buyItem(address nftAddress, uint256 tokenId) external payable",
+  "function cancelListing(address nftAddress, uint256 tokenId) external",
+];
+
+export class OnefinityNFTService {
+  private provider: ethers.providers.JsonRpcProvider;
   private signer: ethers.Signer | null = null;
+  private nftContract: ethers.Contract | null = null;
+  private marketplaceContract: ethers.Contract | null = null;
 
-  constructor() {
-    if (window.ethereum) {
-      this.provider = new ethers.providers.Web3Provider(window.ethereum);
-    } else {
-      console.warn("Ethereum object not found, please install MetaMask.");
-    }
-  }
-
-  async init(nftContractAddress: string, marketplaceContractAddress: string) {
-    // Initialiser les contrats avec les adresses fournies
-    console.log(
-      `Initializing contracts: NFT(${nftContractAddress}), Marketplace(${marketplaceContractAddress})`
+  constructor(nftContractAddress: string, marketplaceContractAddress: string) {
+    this.provider = new ethers.providers.JsonRpcProvider(
+      networkConfig.rpcUrls[0]
+    );
+    this.nftContract = new ethers.Contract(
+      nftContractAddress,
+      MINIMAL_ERC721_ABI,
+      this.provider
+    );
+    this.marketplaceContract = new ethers.Contract(
+      marketplaceContractAddress,
+      MARKETPLACE_ABI,
+      this.provider
     );
   }
-  async mintNFT(collectionName: string, tokenURI: string) {
-    // Logique pour minter un NFT
-    console.log(
-      `Minting NFT in collection ${collectionName} with tokenURI: ${tokenURI}`
-    );
-  }
+
   async connect(): Promise<string> {
-    if (!this.provider) {
-      throw new Error("Web3 provider not found");
+    if (window.ethereum) {
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [networkConfig],
+      });
+
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      this.provider = new ethers.providers.Web3Provider(window.ethereum);
+      this.signer = this.provider.getSigner();
+
+      this.nftContract = new ethers.Contract(
+        contractAddresses.nftToken,
+        MINIMAL_ERC721_ABI,
+        this.signer
+      );
+      this.marketplaceContract = new ethers.Contract(
+        contractAddresses.nftMarketplace,
+        MARKETPLACE_ABI,
+        this.signer
+      );
+
+      return await this.signer.getAddress();
+    } else {
+      throw new Error("Please install MetaMask");
     }
-
-    await this.switchNetwork();
-
-    // Request account access
-    await this.provider.send("eth_requestAccounts", []);
-    this.signer = this.provider.getSigner();
-    return await this.signer.getAddress();
   }
 
-  private async switchNetwork() {
-    if (!this.provider) return;
+  isConnected(): boolean {
+    return this.signer !== null;
+  }
 
-    const network = await this.provider.getNetwork();
-    if (network.chainId !== CHAIN_ID) {
-      try {
-        await this.provider.send("wallet_switchEthereumChain", [
-          { chainId: `0x${CHAIN_ID.toString(16)}` },
-        ]);
-      } catch (switchError: any) {
-        // This error code indicates that the chain has not been added to MetaMask
-        if (switchError.code === 4902) {
-          await this.provider.send("wallet_addEthereumChain", [
-            {
-              chainId: `0x${CHAIN_ID.toString(16)}`,
-              chainName: "OneFinity Testnet",
-              nativeCurrency: { name: "ONE", symbol: "ONE", decimals: 18 },
-              rpcUrls: [ONEFINITY_RPC],
-              blockExplorerUrls: [
-                "https://testnet-explorer.onefinity.network/",
-              ],
-            },
-          ]);
-        } else {
-          throw switchError;
-        }
-      }
+  async getConnectedAddress(): Promise<string | null> {
+    if (this.signer) {
+      return await this.signer.getAddress();
     }
+    return null;
+  }
+
+  async getBalance(address: string): Promise<string> {
+    const balance = await this.provider.getBalance(address);
+    return ethers.utils.formatEther(balance);
   }
 
   async getAllCollections(): Promise<string[]> {
-    if (!this.provider) throw new Error("Provider not initialized");
-
     const latestBlock = await this.provider.getBlockNumber();
     const collections: string[] = [];
 
@@ -134,8 +135,6 @@ class OnefinityNFTService {
   }
 
   async getNFTsForCollection(collectionAddress: string): Promise<NFT[]> {
-    if (!this.provider) throw new Error("Provider not initialized");
-
     const contract = new ethers.Contract(
       collectionAddress,
       MINIMAL_ERC721_ABI,
@@ -148,14 +147,20 @@ class OnefinityNFTService {
       try {
         const owner = await contract.ownerOf(tokenId);
         const tokenURI = await contract.tokenURI(tokenId);
+        const metadata = await fetch(tokenURI).then((res) => res.json());
+
         nfts.push({
           id: tokenId.toString(),
-          name: `NFT ${tokenId}`,
-          description: `NFT from collection ${collectionAddress}`,
-          image: tokenURI,
-          price: "0", // You may want to implement a price fetching mechanism
+          name: metadata.name || `NFT ${tokenId}`,
+          description:
+            metadata.description || `NFT from collection ${collectionAddress}`,
+          image: metadata.image || "https://via.placeholder.com/150",
+          price: "0", // You may need to implement a way to get the price
           owner,
-          type: "collected", // Default type, you may want to implement a type determination logic
+          creator: metadata.creator || owner, // Add creator property
+          isListed: false, // Add isListed property, default to false
+          type: "collected",
+          collectionAddress,
         });
         tokenId++;
       } catch (error) {
@@ -165,70 +170,90 @@ class OnefinityNFTService {
 
     return nfts;
   }
-
-  async buyNFT(collectionAddress: string, tokenId: number, price: string) {
-    if (!this.signer) throw new Error("Wallet not connected");
-
-    const contract = new ethers.Contract(
-      collectionAddress,
-      MINIMAL_ERC721_ABI,
-      this.signer
-    );
-    const tx = await contract.safeTransferFrom(
-      await contract.ownerOf(tokenId),
-      await this.signer.getAddress(),
-      tokenId,
-      {
-        value: ethers.utils.parseEther(price),
-      }
-    );
-    await tx.wait();
-  }
-
-  async listNFT(collectionAddress: string, tokenId: number, price: string) {
-    if (!this.signer) throw new Error("Wallet not connected");
-
-    const contract = new ethers.Contract(
-      collectionAddress,
-      MINIMAL_ERC721_ABI,
-      this.signer
-    );
-    const marketplaceAddress = "YOUR_MARKETPLACE_CONTRACT_ADDRESS";
-    const tx = await contract.setApprovalForAll(marketplaceAddress, true);
-    await tx.wait();
-
-    console.log(
-      `NFT ${tokenId} from collection ${collectionAddress} approved for listing at price ${price}`
-    );
-  }
-
-  async getBalance(address: string): Promise<string> {
-    if (!this.provider) throw new Error("Provider not initialized");
-
-    const balance = await this.provider.getBalance(address);
-    return ethers.utils.formatEther(balance);
-  }
-
   async getUserNFTs(address: string): Promise<NFT[]> {
-    if (!this.provider) throw new Error("Provider not initialized");
     const collections = await this.getAllCollections();
     let userNFTs: NFT[] = [];
     for (const collection of collections) {
       const collectionNFTs = await this.getNFTsForCollection(collection);
       userNFTs = userNFTs.concat(
-        collectionNFTs.filter((nft: NFT) => nft.owner === address)
+        collectionNFTs
+          .filter((nft) => nft.owner === address || nft.creator === address)
+          .map((nft) => ({
+            ...nft,
+            creator: nft.creator || address, // Si creator n'est pas défini, on suppose que le propriétaire est le créateur
+            isListed: nft.price !== "0", // On suppose qu'un NFT est listé si son prix n'est pas 0
+          }))
       );
     }
     return userNFTs;
   }
 
-  async getConnectedAddress(): Promise<string | null> {
-    if (!this.signer) return null;
-    return await this.signer.getAddress();
+  async mintNFT(tokenURI: string): Promise<void> {
+    if (!this.signer || !this.nftContract) {
+      throw new Error("Wallet not connected or NFT contract not initialized");
+    }
+
+    const tx = await this.nftContract.mint(
+      await this.signer.getAddress(),
+      tokenURI
+    );
+    await tx.wait();
   }
 
-  isConnected(): boolean {
-    return this.signer !== null;
+  async listNFT(tokenId: number, price: string): Promise<void> {
+    if (!this.signer || !this.nftContract || !this.marketplaceContract) {
+      throw new Error("Wallet not connected or contracts not initialized");
+    }
+
+    const isApproved = await this.nftContract.isApprovedForAll(
+      await this.signer.getAddress(),
+      contractAddresses.nftMarketplace
+    );
+    if (!isApproved) {
+      const approveTx = await this.nftContract.setApprovalForAll(
+        contractAddresses.nftMarketplace,
+        true
+      );
+      await approveTx.wait();
+    }
+
+    const listTx = await this.marketplaceContract.listItem(
+      contractAddresses.nftToken,
+      tokenId,
+      ethers.utils.parseEther(price)
+    );
+    await listTx.wait();
+  }
+
+  async buyNFT(tokenId: number, price: string): Promise<void> {
+    if (!this.signer || !this.marketplaceContract) {
+      throw new Error(
+        "Wallet not connected or marketplace contract not initialized"
+      );
+    }
+
+    const buyTx = await this.marketplaceContract.buyItem(
+      contractAddresses.nftToken,
+      tokenId,
+      {
+        value: ethers.utils.parseEther(price),
+      }
+    );
+    await buyTx.wait();
+  }
+
+  async cancelListing(tokenId: number): Promise<void> {
+    if (!this.signer || !this.marketplaceContract) {
+      throw new Error(
+        "Wallet not connected or marketplace contract not initialized"
+      );
+    }
+
+    const cancelTx = await this.marketplaceContract.cancelListing(
+      contractAddresses.nftToken,
+      tokenId
+    );
+    await cancelTx.wait();
   }
 }
 

@@ -27,35 +27,170 @@
     @include responsive(md) {
       padding: $spacing-lg;
     }
+  }
 
-    input,
-    textarea {
-      width: 100%;
-      background: rgba($background-light, 0.1);
-      border: 1px solid rgba($text-light, 0.1);
-      color: $text-light;
-      padding: $spacing-sm;
-      margin-bottom: $spacing-md;
-      font-family: $font-primary;
+  &__upload {
+    margin-bottom: $spacing-md;
+    text-align: center;
+  }
 
-      &::placeholder {
-        color: $text-muted;
-      }
+  &__preview {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    margin-bottom: $spacing-sm;
+    border-radius: $border-radius-md;
+  }
+
+  &__upload-placeholder {
+    border: 2px dashed $color-primary;
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    cursor: pointer;
+    transition: $transition-default;
+
+    &:hover {
+      background-color: rgba($color-primary, 0.1);
     }
 
-    button {
-      width: 100%;
-      background: $gradient-primary;
-      color: $text-light;
-      border: none;
-      padding: $spacing-sm;
-      font-family: $font-secondary;
-      font-weight: 600;
-      cursor: pointer;
-      transition: $transition-default;
+    svg {
+      font-size: 3rem;
+      color: $color-primary;
+      margin-bottom: $spacing-sm;
+    }
 
-      &:hover {
-        @include neon-glow($color-primary);
+    p {
+      color: $text-muted;
+    }
+  }
+
+  &__file-input {
+    display: none;
+  }
+
+  &__file-label {
+    display: inline-block;
+    padding: $spacing-sm $spacing-md;
+    background-color: $color-primary;
+    color: $text-light;
+    border-radius: $border-radius-sm;
+    cursor: pointer;
+    transition: $transition-default;
+
+    &:hover {
+      background-color: darken($color-primary, 10%);
+    }
+  }
+
+  &__form-group {
+    margin-bottom: $spacing-md;
+  }
+
+  &__label {
+    display: block;
+    margin-bottom: $spacing-xs;
+    color: $text-light;
+    font-weight: 600;
+  }
+
+  &__input,
+  &__textarea,
+  &__select {
+    width: 100%;
+    padding: $spacing-sm;
+    background-color: rgba($background-light, 0.1);
+    border: 1px solid rgba($text-light, 0.1);
+    border-radius: $border-radius-sm;
+    color: $text-light;
+    font-family: $font-primary;
+    transition: $transition-default;
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary;
+      box-shadow: 0 0 0 2px rgba($color-primary, 0.2);
+    }
+
+    &::placeholder {
+      color: $text-muted;
+    }
+  }
+
+  &__textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  &__submit {
+    width: 100%;
+    padding: $spacing-sm;
+    background: $gradient-primary;
+    color: $text-light;
+    border: none;
+    border-radius: $border-radius-sm;
+    font-family: $font-secondary;
+    font-weight: 600;
+    cursor: pointer;
+    transition: $transition-default;
+
+    &:hover:not(:disabled) {
+      @include neon-glow($color-primary);
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+
+  &__spinner {
+    animation: spin 1s linear infinite;
+    margin-right: $spacing-sm;
+  }
+
+  &__error,
+  &__success {
+    margin-top: $spacing-md;
+    padding: $spacing-sm;
+    border-radius: $border-radius-sm;
+    text-align: center;
+  }
+
+  &__error {
+    background-color: rgba($color-error, 0.1);
+    color: $color-error;
+  }
+
+  &__success {
+    background-color: rgba($color-success, 0.1);
+    color: $color-success;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .create {
+    &__title {
+      font-size: 1.8rem;
+    }
+
+    &__form {
+      padding: $spacing-sm;
+    }
+
+    &__upload-placeholder {
+      padding: $spacing-md;
+
+      svg {
+        font-size: 2rem;
       }
     }
   }

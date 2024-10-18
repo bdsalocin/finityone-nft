@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import { NFT } from "../types";
 
-interface NFTCardProps {
+export interface NFTCardProps {
   nft: NFT;
   onBuy: () => void;
   onList: (price: string) => void;
+  onCancelListing: () => void;
   isOwner: boolean;
 }
 
-const NFTCard: React.FC<NFTCardProps> = ({ nft, onBuy, onList, isOwner }) => {
+const NFTCard: React.FC<NFTCardProps> = ({
+  nft,
+  onBuy,
+  onList,
+  onCancelListing,
+  isOwner,
+}) => {
   const [listPrice, setListPrice] = useState("");
 
   return (
@@ -21,7 +28,14 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft, onBuy, onList, isOwner }) => {
         {nft.price !== "0" ? (
           <>
             <p className="nft-card__price">Price: {nft.price} ONE</p>
-            {!isOwner && (
+            {isOwner ? (
+              <button
+                onClick={onCancelListing}
+                className="nft-card__cancel-button"
+              >
+                Cancel Listing
+              </button>
+            ) : (
               <button onClick={onBuy} className="nft-card__buy-button">
                 Buy
               </button>

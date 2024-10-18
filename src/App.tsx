@@ -7,20 +7,19 @@ import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
-import CreateCollection from "./pages/CreateCollection";
+import Create from "./pages/Create";
 import Profile from "./pages/Profile";
 import { WalletProvider } from "./contexts/WalletContext";
 import "./index.scss";
+
+const NFT_CONTRACT_ADDRESS = "YOUR_NFT_CONTRACT_ADDRESS";
+const MARKETPLACE_CONTRACT_ADDRESS = "YOUR_MARKETPLACE_CONTRACT_ADDRESS";
 
 const AppContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   minHeight: "100vh",
 }));
-
-const NFT_CONTRACT_ADDRESS = "0x1234567890123456789012345678901234567890";
-const MARKETPLACE_CONTRACT_ADDRESS =
-  "0x0987654321098765432109876543210987654321";
 
 const App: React.FC = () => {
   return (
@@ -37,9 +36,8 @@ const App: React.FC = () => {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/explore" element={<Explore />} />
-                <Route path="/create" element={<CreateCollection />} />
+                <Route path="/create" element={<Create />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/create" element={<CreateCollection />} />
               </Routes>
             </Container>
             <Footer />

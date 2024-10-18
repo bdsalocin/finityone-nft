@@ -11,11 +11,11 @@ export const networkConfig = {
 };
 
 export const contractAddresses = {
-  nftMarketplace: "0x...", // Replace with the actual address of your NFT Marketplace contract
-  nftToken: "0x...", // Replace with the actual address of your NFT Token contract
+  nftMarketplace: "0x123...789", // Replace with the actual address of your NFT Marketplace contract
+  nftToken: "0xabc...def", // Replace with the actual address of your NFT Token contract
 };
 
 export const apiConfig = {
-  baseUrl: "https://api.your-nft-platform.com", // Replace with the base URL of your API
+  baseUrl: "https://api.your-nft-platform.com", // Replace with your API base URL
   timeout: 5000,
 };

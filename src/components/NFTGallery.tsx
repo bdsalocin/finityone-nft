@@ -1,11 +1,12 @@
 import React from "react";
 import { NFT } from "../types";
-import NFTCard from "./NFTCard";
+import NFTCard, { NFTCardProps } from "./NFTCard";
 
-interface NFTGalleryProps {
+export interface NFTGalleryProps {
   nfts: NFT[];
   onBuy: (nft: NFT) => void;
   onList: (nft: NFT) => void;
+  onCancelListing: (nft: NFT) => void;
   isOwner: (nft: NFT) => boolean;
 }
 
@@ -13,6 +14,7 @@ const NFTGallery: React.FC<NFTGalleryProps> = ({
   nfts,
   onBuy,
   onList,
+  onCancelListing,
   isOwner,
 }) => {
   return (
@@ -22,7 +24,8 @@ const NFTGallery: React.FC<NFTGalleryProps> = ({
           key={nft.id}
           nft={nft}
           onBuy={() => onBuy(nft)}
-          onList={() => onList(nft)}
+          onList={(price) => onList({ ...nft, price })}
+          onCancelListing={() => onCancelListing(nft)}
           isOwner={isOwner(nft)}
         />
       ))}

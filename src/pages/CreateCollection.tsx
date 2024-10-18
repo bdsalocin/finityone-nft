@@ -1,111 +1,100 @@
 import React, { useState, useContext } from "react";
 import { WalletContext } from "../contexts/WalletContext";
-import "../styles/pages/_createCollection.scss";
+import "../styles/pages/_create.scss";
+import { NewNFTMetadata } from "../types";
 
 const CreateCollection: React.FC = () => {
-  const { nftService, address } = useContext(WalletContext)!;
+  const context = useContext(WalletContext);
+
+  if (!context) {
+    throw new Error("WalletContext not found");
+  }
+
+  const { nftService } = context;
   const [collectionName, setCollectionName] = useState("");
-  const [newNFTMetadata, setNewNFTMetadata] = useState({
+  const [newNFTMetadata, setNewNFTMetadata] = useState<NewNFTMetadata>({
     name: "",
     description: "",
     image: "",
   });
-  const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleCreateCollection = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-    try {
-      // Ici, vous devriez avoir une méthode pour créer une nouvelle collection
-      // Cette méthode n'existe pas encore dans notre service, donc c'est un placeholder
-      // await nftService.createCollection(collectionName);
-      setSuccess(`Collection "${collectionName}" created successfully!`);
-      setCollectionName("");
-    } catch (err: any) {
-      setError(err.message || "Failed to create collection");
-    }
-  };
 
-  const handleMintNFT = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
     try {
       // En pratique, vous devriez d'abord uploader l'image sur IPFS et obtenir son URI
       const tokenURI = JSON.stringify(newNFTMetadata);
-      await nftService.mintNFT(collectionName, tokenURI);
+      await nftService.mintNFT(tokenURI);
       setSuccess(`NFT "${newNFTMetadata.name}" minted successfully!`);
       setNewNFTMetadata({ name: "", description: "", image: "" });
     } catch (err: any) {
-      setError(err.message || "Failed to mint NFT");
+      setError(err.message || "An error occurred while minting the NFT");
     }
   };
 
-  if (!address) {
-    return (
-      <div className="create-collection">
-        Please connect your wallet to create a collection or mint NFTs.
-      </div>
-    );
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setNewNFTMetadata((prev) => ({ ...prev, [name]: value }));
+  };
 
   return (
-    <div className="create-collection">
-      <h1>Create Collection and Mint NFT</h1>
-
-      <form
-        onSubmit={handleCreateCollection}
-        className="create-collection__form"
-      >
-        <h2>Create New Collection</h2>
-        <input
-          type="text"
-          value={collectionName}
-          onChange={(e) => setCollectionName(e.target.value)}
-          placeholder="Collection Name"
-          required
-        />
-        <button type="submit">Create Collection</button>
+    <div className="create">
+      <h1 className="create__title">Create NFT Collection</h1>
+      <form className="create__form" onSubmit={handleSubmit}>
+        <div className="create__form-group">
+          <label htmlFor="collectionName">Collection Name</label>
+          <input
+            type="text"
+            id="collectionName"
+            value={collectionName}
+            onChange={(e) => setCollectionName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="create__form-group">
+          <label htmlFor="name">NFT Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={newNFTMetadata.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="create__form-group">
+          <label htmlFor="description">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            value={newNFTMetadata.description}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="create__form-group">
+          <label htmlFor="image">Image URL</label>
+          <input
+            type="text"
+            id="image"
+            name="image"
+            value={newNFTMetadata.image}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit" className="create__submit">
+          Create NFT
+        </button>
       </form>
-
-      <form onSubmit={handleMintNFT} className="create-collection__form">
-        <h2>Mint New NFT</h2>
-        <input
-          type="text"
-          value={newNFTMetadata.name}
-          onChange={(e) =>
-            setNewNFTMetadata({ ...newNFTMetadata, name: e.target.value })
-          }
-          placeholder="NFT Name"
-          required
-        />
-        <textarea
-          value={newNFTMetadata.description}
-          onChange={(e) =>
-            setNewNFTMetadata({
-              ...newNFTMetadata,
-              description: e.target.value,
-            })
-          }
-          placeholder="NFT Description"
-          required
-        />
-        <input
-          type="text"
-          value={newNFTMetadata.image}
-          onChange={(e) =>
-            setNewNFTMetadata({ ...newNFTMetadata, image: e.target.value })
-          }
-          placeholder="Image URL"
-          required
-        />
-        <button type="submit">Mint NFT</button>
-      </form>
-
-      {error && <p className="create-collection__error">{error}</p>}
-      {success && <p className="create-collection__success">{success}</p>}
+      {success && <p className="create__success">{success}</p>}
+      {error && <p className="create__error">{error}</p>}
     </div>
   );
 };

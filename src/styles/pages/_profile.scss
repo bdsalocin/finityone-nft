@@ -1,41 +1,53 @@
 @import "../variables";
 
 .profile {
-  padding: $spacing-xl 0;
-
-  &__header {
-    position: relative;
-    margin-bottom: $spacing-lg;
-  }
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-md;
 
   &__cover {
-    height: 200px;
-    background-color: $background-medium;
+    background: linear-gradient(
+      135deg,
+      $color-primary,
+      $color-secondary,
+      $color-tertiary
+    );
+    background-size: 300% 300%;
+    animation: gradientShift 15s ease infinite;
     border-radius: $border-radius-lg;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-xl;
+    @include glass-morphism;
     position: relative;
-  }
+    overflow: hidden;
 
-  &__edit-cover {
-    position: absolute;
-    right: $spacing-md;
-    bottom: $spacing-md;
-    background-color: rgba($background-dark, 0.7);
-    color: $text-light;
-    border: none;
-    padding: $spacing-xs $spacing-sm;
-    border-radius: $border-radius-sm;
-    cursor: pointer;
-    transition: $transition-default;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba($background-dark, 0.3);
+      z-index: 1;
+    }
 
-    &:hover {
-      background-color: $background-dark;
+    & > * {
+      position: relative;
+      z-index: 2;
     }
   }
 
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
   &__avatar-container {
-    position: absolute;
-    left: $spacing-lg;
-    bottom: -60px;
+    position: relative;
+    flex-shrink: 0;
   }
 
   &__avatar {
@@ -43,6 +55,7 @@
     height: 120px;
     border-radius: 50%;
     border: 4px solid $background-light;
+    object-fit: cover;
     @include neon-glow($color-primary);
   }
 
@@ -50,57 +63,58 @@
     position: absolute;
     right: 0;
     bottom: 0;
-    background-color: $color-primary;
+    background-color: rgba($background-dark, 0.7);
     color: $text-light;
     border: none;
-    width: 30px;
-    height: 30px;
+    padding: $spacing-xs;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     cursor: pointer;
     transition: $transition-default;
 
     &:hover {
-      background-color: darken($color-primary, 10%);
+      background-color: $background-dark;
+      @include neon-glow($color-secondary);
     }
   }
 
   &__info {
-    padding-left: 140px;
-    margin-bottom: $spacing-xl;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
   }
 
-  &__name {
-    font-family: $font-secondary;
+  &__main-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  &__username,
+  &__username-input {
     font-size: 2rem;
     font-weight: 700;
-    margin-bottom: $spacing-xs;
-    display: flex;
-    align-items: center;
+    color: $text-light;
+    margin: 0;
   }
 
-  &__edit-name,
-  &__edit-bio {
-    background: none;
-    border: none;
-    color: $color-primary;
-    cursor: pointer;
-    margin-left: $spacing-xs;
-    transition: $transition-default;
-
-    &:hover {
-      color: $color-secondary;
-    }
+  &__username-input,
+  &__bio-input {
+    width: 100%;
+    background-color: rgba($background-dark, 0.3);
+    border: 1px solid $border-color;
+    color: $text-light;
+    padding: $spacing-xs;
+    border-radius: $border-radius-sm;
   }
 
   &__address {
     font-family: $font-primary;
     color: $text-muted;
-    margin-bottom: $spacing-sm;
     display: flex;
     align-items: center;
+    margin: 0;
   }
 
   &__copy-address {
@@ -119,14 +133,24 @@
   &__balance {
     font-family: $font-primary;
     color: $text-light;
-    font-size: 1.1rem;
-    margin-bottom: $spacing-sm;
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  &__bio-container {
+    max-width: 500px;
+  }
+
+  &__bio,
+  &__bio-input {
+    color: $text-light;
+    font-size: 1rem;
+    margin: 0;
   }
 
   &__social {
     display: flex;
     gap: $spacing-sm;
-    margin-bottom: $spacing-sm;
   }
 
   &__social-link {
@@ -136,18 +160,47 @@
 
     &:hover {
       color: $color-primary;
+      @include neon-glow($color-primary);
     }
   }
 
-  &__bio {
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-sm;
+    margin-top: $spacing-md;
+  }
+
+  &__stats {
+    display: flex;
+    justify-content: space-around;
+    background: $background-medium;
+    border-radius: $border-radius-md;
+    padding: $spacing-md;
+    margin-bottom: $spacing-lg;
+    @include glass-morphism;
+  }
+
+  &__stat {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
     color: $text-light;
-    margin-bottom: $spacing-md;
+    font-size: 1rem;
+
+    svg {
+      color: $color-primary;
+    }
   }
 
   &__tabs {
     display: flex;
-    border-bottom: 1px solid $border-color;
+    justify-content: center;
     margin-bottom: $spacing-lg;
+    background: $background-medium;
+    border-radius: $border-radius-md;
+    padding: $spacing-xs;
+    @include glass-morphism;
   }
 
   &__tab {
@@ -159,15 +212,17 @@
     padding: $spacing-sm $spacing-md;
     cursor: pointer;
     transition: $transition-default;
-    border-bottom: 2px solid transparent;
+    border-radius: $border-radius-sm;
 
     &:hover {
       color: $text-light;
+      background: rgba($background-light, 0.3);
     }
 
     &.active {
       color: $color-primary;
-      border-bottom-color: $color-primary;
+      background: $background-light;
+      @include neon-glow($color-primary);
     }
   }
 
@@ -175,40 +230,70 @@
     min-height: 300px;
   }
 
-  &__activity {
-    color: $text-light;
-  }
-
   &--not-connected {
     text-align: center;
     padding: $spacing-xl 0;
 
-    .profile__title {
-      font-size: 2rem;
-      margin-bottom: $spacing-md;
-    }
-
-    .profile__subtitle {
-      font-size: 1.1rem;
+    h1 {
       margin-bottom: $spacing-lg;
-      color: $text-muted;
     }
+  }
+
+  &__loading,
+  &__error {
+    text-align: center;
+    padding: $spacing-xl 0;
+    font-size: 1.2rem;
+  }
+
+  &__error {
+    color: $color-error;
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 
 @media (max-width: $breakpoint-md) {
   .profile {
-    &__info {
-      padding-left: 0;
+    &__header {
+      flex-direction: column;
+      align-items: center;
       text-align: center;
     }
 
     &__avatar-container {
-      position: static;
-      display: flex;
+      margin-bottom: $spacing-md;
+    }
+
+    &__info {
+      width: 100%;
+    }
+
+    &__main-info {
       justify-content: center;
-      margin-top: -60px;
-      margin-bottom: $spacing-lg;
+    }
+
+    &__bio-container {
+      max-width: none;
+    }
+
+    &__actions {
+      justify-content: center;
+    }
+
+    &__stats {
+      flex-direction: column;
+      gap: $spacing-md;
     }
 
     &__tabs {
@@ -216,7 +301,16 @@
     }
 
     &__tab {
-      flex: 1 0 50%;
+      flex: 1 0 33.33%;
+      text-align: center;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .profile {
+    &__tab {
+      flex: 1 0 100%;
     }
   }
 }
