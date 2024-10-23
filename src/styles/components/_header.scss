@@ -1,67 +1,119 @@
 @import "../variables";
 
 .header {
-  background-color: $background-dark;
-  padding: $spacing-md 0;
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 1000;
+  left: 0;
+  right: 0;
+  z-index: $z-index-fixed;
+  background-color: rgba($background-dark, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba($color-primary, 0.1);
 
   &__container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 $spacing-md;
+    height: 70px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
   }
 
   &__logo {
-    display: flex;
-    align-items: center;
+    position: relative;
+    z-index: $z-index-fixed + 1;
     text-decoration: none;
-    background-color: transparent;
-    transition: none;
-    transform: none;
-    box-shadow: none;
 
-    &:hover {
-      background-color: transparent;
-      transform: none;
-      box-shadow: none;
+    &-text {
+      font-family: $font-secondary;
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: $gradient-primary;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      @media (max-width: $breakpoint-md) {
+        font-size: 1.2rem;
+      }
     }
   }
 
-  &__logo-image {
-    height: 60px;
-    width: auto;
-    object-fit: contain;
-  }
-
+  // Navigation principale
   &__nav {
     display: flex;
-    gap: $spacing-md;
     align-items: center;
+    gap: $spacing-lg;
+
+    @media (max-width: $breakpoint-md) {
+      display: none;
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      height: calc(100vh - 70px);
+      background-color: $background-dark;
+      padding: $spacing-md;
+      overflow-y: auto;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+
+      &.active {
+        display: flex;
+      }
+    }
+  }
+
+  &__nav-list {
+    display: flex;
+    gap: $spacing-lg;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    @media (max-width: $breakpoint-md) {
+      flex-direction: column;
+      gap: 0;
+      width: 100%;
+    }
   }
 
   &__nav-item {
     position: relative;
+
+    @media (max-width: $breakpoint-md) {
+      width: 100%;
+      border-bottom: 1px solid rgba($color-primary, 0.1);
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
 
-  &__nav-link {
-    color: $text-light;
-    text-decoration: none;
-    padding: $spacing-xs $spacing-sm;
-    border-radius: $border-radius-sm;
-    transition: background-color 0.3s ease, color 0.3s ease;
+  &__nav-button {
     display: flex;
     align-items: center;
     gap: $spacing-xs;
+    padding: $spacing-sm $spacing-md;
+    color: $text-light;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: $font-primary;
+    font-size: 1rem;
+    width: 100%;
+    text-align: left;
+    transition: $transition-default;
 
-    &:hover,
-    &.active {
-      background-color: rgba($color-primary, 0.2);
+    &:hover {
       color: $color-primary;
+    }
+
+    @media (max-width: $breakpoint-md) {
+      padding: $spacing-md;
+      justify-content: space-between;
     }
   }
 
@@ -69,141 +121,141 @@
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: $background-medium;
-    border: 1px solid $border-color;
-    border-radius: $border-radius-sm;
-    padding: $spacing-xs 0;
     min-width: 200px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-  }
+    background-color: $background-medium;
+    border-radius: $border-radius-sm;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: $z-index-dropdown;
 
-  &__dropdown-item {
-    display: block;
-    padding: $spacing-xs $spacing-sm;
-    color: $text-light;
-    text-decoration: none;
-    transition: background-color 0.3s ease, color 0.3s ease;
-
-    &:hover {
-      background-color: rgba($color-primary, 0.2);
-      color: $color-primary;
+    @media (max-width: $breakpoint-md) {
+      position: static;
+      background-color: rgba($background-light, 0.3);
+      box-shadow: none;
+      margin-top: 0;
+      border-radius: 0;
     }
   }
 
+  &__dropdown-link {
+    display: block;
+    padding: $spacing-sm $spacing-md;
+    color: $text-light;
+    text-decoration: none;
+    transition: $transition-default;
+
+    &:hover {
+      background-color: rgba($color-primary, 0.1);
+      color: $color-primary;
+    }
+
+    @media (max-width: $breakpoint-md) {
+      padding: $spacing-md $spacing-xl;
+    }
+  }
+
+  // Actions (Search, Cart, etc.)
   &__actions {
     display: flex;
     align-items: center;
     gap: $spacing-md;
-  }
+    z-index: $z-index-fixed + 1;
 
-  &__search-container {
-    position: relative;
-  }
-
-  &__search-icon {
-    position: absolute;
-    left: $spacing-sm;
-    top: 50%;
-    transform: translateY(-50%);
-    color: $text-muted;
-  }
-
-  &__search {
-    padding: $spacing-xs $spacing-sm $spacing-xs $spacing-xl;
-    border: 1px solid $color-primary;
-    background-color: rgba($color-primary, 0.1);
-    color: $text-light;
-    border-radius: $border-radius-sm;
-    width: 250px;
-
-    &::placeholder {
-      color: rgba($text-light, 0.5);
+    @media (max-width: $breakpoint-md) {
+      gap: $spacing-sm;
     }
   }
 
-  &__menu-button {
-    display: none;
+  &__action-button {
     background: none;
     border: none;
     color: $text-light;
-    font-size: 1.5rem;
+    padding: $spacing-xs;
     cursor: pointer;
+    transition: $transition-default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      color: $color-primary;
+    }
   }
 
-  @media (max-width: $breakpoint-lg) {
-    &__container {
-      flex-wrap: wrap;
+  // Menu mobile button
+  &__menu-button {
+    display: none;
+    background: rgba($color-primary, 0.1);
+    border: 1px solid rgba($color-primary, 0.2);
+    border-radius: $border-radius-sm;
+    width: 40px;
+    height: 40px;
+    color: $text-light;
+    cursor: pointer;
+    transition: $transition-default;
+    align-items: center;
+    justify-content: center;
+
+    @media (max-width: $breakpoint-md) {
+      display: flex;
     }
 
-    &__logo {
-      flex-basis: 100%;
-      justify-content: center;
-      margin-bottom: $spacing-md;
+    svg {
+      width: 24px;
+      height: 24px;
     }
 
-    &__nav {
-      order: 3;
-      flex-basis: 100%;
-      justify-content: center;
-      margin-top: $spacing-md;
+    &:hover,
+    &.active {
+      background: rgba($color-primary, 0.2);
+      color: $color-primary;
     }
+  }
 
-    &__actions {
-      order: 2;
-      flex-basis: 100%;
-      justify-content: center;
-    }
+  &__mobile-actions {
+    display: none;
 
-    &__search {
+    @media (max-width: $breakpoint-md) {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       width: 100%;
+      padding: $spacing-md;
+      margin-top: auto;
+      border-top: 1px solid rgba($color-primary, 0.1);
     }
   }
 
-  @media (max-width: $breakpoint-md) {
-    &__menu-button {
-      display: block;
-      order: 1;
-    }
-
-    &__nav {
+  .hide-mobile {
+    @media (max-width: $breakpoint-md) {
       display: none;
-      flex-direction: column;
-      align-items: stretch;
-
-      &.active {
-        display: flex;
-      }
-    }
-
-    &__nav-item {
-      margin-bottom: $spacing-sm;
-    }
-
-    &__dropdown {
-      position: static;
-      background-color: transparent;
-      box-shadow: none;
-      padding-left: $spacing-md;
-    }
-
-    &__actions {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    &__search-container {
-      margin-bottom: $spacing-sm;
     }
   }
+}
 
-  @media (max-width: $breakpoint-sm) {
-    &__logo-image {
-      height: 40px;
-    }
+// Menu mobile backdrop
+.mobile-menu-backdrop {
+  display: none;
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: $z-index-modal-backdrop;
 
-    &__search {
-      font-size: 0.9rem;
-    }
+  &.active {
+    display: block;
   }
+}
+
+// Body class when menu is open
+.menu-open {
+  overflow: hidden;
 }

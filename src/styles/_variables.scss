@@ -1,40 +1,88 @@
+// Colors
 $color-primary: #00c0ff;
 $color-secondary: #ff00a8;
 $color-tertiary: #7000ff;
+$color-success: #4caf50;
+$color-error: #f44336;
+
+// Backgrounds
 $background-dark: #0a0b0d;
 $background-medium: #1c1e22;
 $background-light: #2c2f36;
 $background-paper: #ffffff;
 
-$text-light: #fffff1;
+// Text
+$text-light: #ffffff;
 $text-muted: #a0a0a0;
 $text-accent: #00c0ff;
 
+// Gradients
 $gradient-primary: linear-gradient(45deg, $color-primary, $color-secondary);
 $gradient-secondary: linear-gradient(45deg, $color-secondary, $color-tertiary);
 
+// Typography
 $font-primary: "Rajdhani", sans-serif;
 $font-secondary: "Orbitron", sans-serif;
 
-$spacing-xs: 0.5rem;
-$spacing-sm: 1rem;
-$spacing-md: 1.5rem;
-$spacing-lg: 2rem;
-$spacing-xl: 3rem;
+// Spacing
+$spacing-xs: 0.5rem; // 8px
+$spacing-sm: 0.75rem; // 12px
+$spacing-md: 1rem; // 16px
+$spacing-lg: 1.5rem; // 24px
+$spacing-xl: 2rem; // 32px
+$spacing-2xl: 3rem; // 48px
 
+// Border Radius
 $border-radius-sm: 8px;
 $border-radius-md: 12px;
 $border-radius-lg: 20px;
 
+// Shadows
 $box-shadow: 0 4px 20px rgba(0, 192, 255, 0.15);
 $box-shadow-hover: 0 8px 30px rgba(0, 192, 255, 0.25);
 
+// Transitions
 $transition-default: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 
-// Ajout des variables manquantes
-$color-success: #4caf50;
-$color-error: #f44336;
+// Breakpoints
+$breakpoint-xs: 0;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+// Border
 $border-color: #2c2f36;
+
+// Z-index
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+
+// Mixins
+@mixin responsive($breakpoint) {
+  @if $breakpoint == sm {
+    @media (min-width: $breakpoint-sm) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @media (min-width: $breakpoint-md) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @media (min-width: $breakpoint-lg) {
+      @content;
+    }
+  } @else if $breakpoint == xl {
+    @media (min-width: $breakpoint-xl) {
+      @content;
+    }
+  }
+}
 
 @mixin neon-glow($color) {
   box-shadow: 0 0 5px rgba($color, 0.5), 0 0 10px rgba($color, 0.5),
@@ -66,27 +114,26 @@ $border-color: #2c2f36;
   }
 }
 
-$breakpoint-sm: 576px;
-$breakpoint-md: 768px;
-$breakpoint-lg: 992px;
-$breakpoint-xl: 1200px;
+// Container widths
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+);
 
-@mixin responsive($breakpoint) {
-  @if $breakpoint == sm {
-    @media (min-width: $breakpoint-sm) {
-      @content;
-    }
-  } @else if $breakpoint == md {
-    @media (min-width: $breakpoint-md) {
-      @content;
-    }
-  } @else if $breakpoint == lg {
-    @media (min-width: $breakpoint-lg) {
-      @content;
-    }
-  } @else if $breakpoint == xl {
-    @media (min-width: $breakpoint-xl) {
-      @content;
+@mixin make-container() {
+  width: 100%;
+  padding-right: $spacing-md;
+  padding-left: $spacing-md;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@mixin make-container-max-widths() {
+  @each $breakpoint, $max-width in $container-max-widths {
+    @include responsive($breakpoint) {
+      max-width: $max-width;
     }
   }
 }

@@ -1,136 +1,147 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { Search, Menu, X, ChevronDown, ShoppingCart } from "lucide-react";
 import WalletButton from "../WalletButton";
-import {
-  FaSearch,
-  FaBars,
-  FaTimes,
-  FaChevronDown,
-  FaShoppingCart,
-} from "react-icons/fa";
-import "../../styles/components/_header.scss";
-import finityOneLogo from "../../assets/finityOne-logo.png";
 
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [exploreOpen, setExploreOpen] = useState(false);
-  const [createOpen, setCreateOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const location = useLocation();
 
+  const navigationItems = [
+    {
+      id: "explore",
+      label: "Explore",
+      dropdown: [
+        { label: "All NFTs", href: "/explore" },
+        { label: "Collections", href: "/collections" },
+        { label: "Activity", href: "/activity" },
+      ],
+    },
+    {
+      id: "create",
+      label: "Create",
+      dropdown: [
+        { label: "Single NFT", href: "/create" },
+        { label: "Collection", href: "/create-collection" },
+      ],
+    },
+  ];
+
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-      if (window.innerWidth > 768) {
-        setMobileMenuOpen(false);
-      }
+    setMobileMenuOpen(false);
+    setActiveDropdown(null);
+  }, [location]);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.classList.add("menu-open");
+    } else {
+      document.body.classList.remove("menu-open");
+    }
+
+    return () => {
+      document.body.classList.remove("menu-open");
     };
+  }, [mobileMenuOpen]);
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const handleDropdownToggle = (id: string) => {
+    setActiveDropdown(activeDropdown === id ? null : id);
+  };
 
-  const toggleMobileMenu = () => {
+  const handleMobileMenuClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  const isActive = (path: string) => location.pathname === path;
-
-  const renderNavItems = () => (
-    <>
-      <Link
-        to="/"
-        className={`header__nav-link ${isActive("/") ? "active" : ""}`}
-      >
-        Home
-      </Link>
-      <div
-        className="header__nav-item"
-        onMouseEnter={() => setExploreOpen(true)}
-        onMouseLeave={() => setExploreOpen(false)}
-      >
-        <span className="header__nav-link">
-          Explore <FaChevronDown />
-        </span>
-        {exploreOpen && (
-          <div className="header__dropdown">
-            <Link to="/explore" className="header__dropdown-item">
-              Explore NFTs
-            </Link>
-            <Link to="/collections" className="header__dropdown-item">
-              Collections
-            </Link>
-            <Link to="/activity" className="header__dropdown-item">
-              Activity
-            </Link>
-          </div>
-        )}
-      </div>
-      <div
-        className="header__nav-item"
-        onMouseEnter={() => setCreateOpen(true)}
-        onMouseLeave={() => setCreateOpen(false)}
-      >
-        <span className="header__nav-link">
-          Create <FaChevronDown />
-        </span>
-        {createOpen && (
-          <div className="header__dropdown">
-            <Link to="/create" className="header__dropdown-item">
-              Create Collection
-            </Link>
-            <Link to="/mint" className="header__dropdown-item">
-              Mint NFT
-            </Link>
-          </div>
-        )}
-      </div>
-      <Link
-        to="/profile"
-        className={`header__nav-link ${isActive("/profile") ? "active" : ""}`}
-      >
-        Profile
-      </Link>
-    </>
-  );
+  const handleNavClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
 
   return (
     <header className="header">
       <div className="header__container">
+        {/* Logo */}
         <Link to="/" className="header__logo">
-          <img
-            src={finityOneLogo}
-            alt="FinityONE Logo"
-            className="header__logo-image"
-          />
+          <span className="header__logo-text">FinityONE</span>
         </Link>
-        {isMobile ? (
-          <button
-            className="header__mobile-menu-button"
-            onClick={toggleMobileMenu}
-          >
-            {mobileMenuOpen ? <FaTimes /> : <FaBars />}
-          </button>
-        ) : (
-          <nav className="header__nav">{renderNavItems()}</nav>
-        )}
-        <div className="header__actions">
-          <div className="header__search-container">
-            <FaSearch className="header__search-icon" />
-            <input
-              type="search"
-              placeholder="Search Collections, NFTs, Users..."
-              className="header__search"
-            />
+
+        {/* Navigation principale */}
+        <nav
+          className={`header__nav ${mobileMenuOpen ? "active" : ""}`}
+          onClick={handleNavClick}
+        >
+          <ul className="header__nav-list">
+            {navigationItems.map((item) => (
+              <li key={item.id} className="header__nav-item">
+                <button
+                  className="header__nav-button"
+                  onClick={() => handleDropdownToggle(item.id)}
+                >
+                  {item.label}
+                  <ChevronDown
+                    style={{
+                      transform:
+                        activeDropdown === item.id ? "rotate(180deg)" : "none",
+                      transition: "transform 0.3s ease",
+                    }}
+                  />
+                </button>
+
+                {activeDropdown === item.id && (
+                  <div className="header__dropdown">
+                    {item.dropdown.map((dropItem) => (
+                      <Link
+                        key={dropItem.href}
+                        to={dropItem.href}
+                        className="header__dropdown-link"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {dropItem.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          {/* Actions mobiles */}
+          <div className="header__mobile-actions">
+            <Link to="/cart" className="header__action-button">
+              <ShoppingCart />
+            </Link>
+            <WalletButton />
           </div>
-          <Link to="/cart" className="header__cart-icon">
-            <FaShoppingCart />
+        </nav>
+
+        {/* Actions */}
+        <div className="header__actions">
+          <button className="header__action-button">
+            <Search />
+          </button>
+          <Link to="/cart" className="header__action-button hide-mobile">
+            <ShoppingCart />
           </Link>
-          <WalletButton />
+          <div className="hide-mobile">
+            <WalletButton />
+          </div>
+          <button
+            className={`header__menu-button ${mobileMenuOpen ? "active" : ""}`}
+            onClick={handleMobileMenuClick}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X /> : <Menu />}
+          </button>
         </div>
       </div>
-      {isMobile && mobileMenuOpen && (
-        <nav className="header__mobile-nav">{renderNavItems()}</nav>
+
+      {/* Backdrop pour le menu mobile */}
+      {mobileMenuOpen && (
+        <div
+          className="mobile-menu-backdrop active"
+          onClick={() => setMobileMenuOpen(false)}
+        />
       )}
     </header>
   );

@@ -1,19 +1,23 @@
 @import "./styles/variables";
-@import "./global";
+
+// Pages
 @import "./styles/pages/home";
 @import "./styles/pages/explore";
 @import "./styles/pages/create";
 @import "./styles/pages/profile";
+
+// Components
 @import "./styles/components/nftcard";
 @import "./styles/components/header";
 @import "./styles/components/wallet-button";
 @import "./styles/components/footer";
 @import "./styles/components/buttons";
 @import "./styles/components/typography";
-@import "./styles/components/nftcard";
+@import "./styles/components/menu-mobile-button";
 
 body {
   font-family: $font-primary;
   background-color: $background-dark;
   color: $text-light;
+  line-height: 1.6;
 }
